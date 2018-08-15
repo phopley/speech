@@ -75,10 +75,29 @@ void SpeechNode::voiceCallback(const speech::voice& voice)
         }
     }
     
-    // Send talking finished 
-    std_msgs::String msg;   
-    msg.data = "";
-    talking_finished_pub_.publish(msg);
+    // Set up to send talking finished
+    finshed_speaking_ = true;
+    loop_count_down_ = 20;
+}
+//---------------------------------------------------------------------------
+
+// If finshed speaking delay until the /robot_face/talking_finished topic is published
+void SpeechNode::speakingFinished()
+{
+    if(finshed_speaking_ == true)
+    {
+        loop_count_down_--;
+        
+        if(loop_count_down_ <= 0)
+        {
+            finshed_speaking_ = false;
+
+            // Send talking finished 
+            std_msgs::String msg;   
+            msg.data = "";
+            talking_finished_pub_.publish(msg);        
+        }    
+    }
 }
 //---------------------------------------------------------------------------
         
@@ -88,6 +107,8 @@ SpeechNode::SpeechNode()
     voice_sub_ = n_.subscribe("/speech/to_speak", 5, &SpeechNode::voiceCallback, this);
 
     talking_finished_pub_ = n_.advertise<std_msgs::String>("/robot_face/talking_finished", 5);
+    
+    finshed_speaking_ = false;
 }
 //---------------------------------------------------------------------------
 
@@ -105,7 +126,20 @@ int main(int argc, char **argv)
   
     std::string node_name = ros::this_node::getName();
 	ROS_INFO("%s started", node_name.c_str());
-	ros::spin();
+	
+	// We want a delay from when a speech finishes to when /robot_face/talking_finished is published
+	
+	ros::Rate r(10); // 10Hz
+	
+    while(ros::ok())
+    {
+        // See if /robot_face/talking_finished should be published published
+        speech_node->speakingFinished();
+        
+        ros::spinOnce();
+        r.sleep();
+    }
+    
 	return 0;
 }
 

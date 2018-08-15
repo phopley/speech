@@ -14,7 +14,9 @@ public:
     SpeechNode();
     
     // This callback is for when the dynamic configuration parameters change
-    void reconfCallback(speech::SpeechConfig &config, uint32_t level); 
+    void reconfCallback(speech::SpeechConfig &config, uint32_t level);
+    // Check if we should delay before sending message on talking_finished topic
+    void speakingFinished(); 
 
 private:
     ros::NodeHandle n_;
@@ -27,6 +29,9 @@ private:
     int treble_;
     double vol_;
     bool norm_;
+    
+    bool finshed_speaking_;
+    int loop_count_down_;
 
     // This callback is for when a voice message received
     void voiceCallback(const speech::voice& voice);     
