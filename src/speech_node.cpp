@@ -77,7 +77,7 @@ void SpeechNode::voiceCallback(const speech::voice& voice)
     
     // Set up to send talking finished
     finshed_speaking_ = true;
-    loop_count_down_ = (int)(SpeechNode::LOOP_FREQUENCY_ * 2);
+    loop_count_down_ = (int)(LOOP_FREQUENCY_ * 2);
 }
 //---------------------------------------------------------------------------
 
