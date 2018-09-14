@@ -17,6 +17,8 @@ public:
     void reconfCallback(speech::SpeechConfig &config, uint32_t level);
     // Check if we should delay before sending message on talking_finished topic
     void speakingFinished(); 
+    
+    const double LOOP_FREQUENCY_ = 10;
 
 private:
     ros::NodeHandle n_;
@@ -31,7 +33,7 @@ private:
     bool norm_;
     
     bool finshed_speaking_;
-    int loop_count_down_;
+    int loop_count_down_;        
 
     // This callback is for when a voice message received
     void voiceCallback(const speech::voice& voice);     

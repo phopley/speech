@@ -77,7 +77,7 @@ void SpeechNode::voiceCallback(const speech::voice& voice)
     
     // Set up to send talking finished
     finshed_speaking_ = true;
-    loop_count_down_ = 20;
+    loop_count_down_ = (int)(SpeechNode::LOOP_FREQUENCY_ * 2);
 }
 //---------------------------------------------------------------------------
 
@@ -129,7 +129,7 @@ int main(int argc, char **argv)
 	
 	// We want a delay from when a speech finishes to when /robot_face/talking_finished is published
 	
-	ros::Rate r(10); // 10Hz
+	ros::Rate r(speech_node->LOOP_FREQUENCY_);	
 	
     while(ros::ok())
     {
